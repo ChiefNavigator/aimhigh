@@ -1,1 +1,4 @@
 rootProject.name = 'aimhigh'
+include 'aimhigh-core'
+include 'aimhigh-batch'
+
