@@ -2,16 +2,17 @@ package com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccoun
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
 public class KcdBankAccountDepositCommand {
-  private final Long userId;
-  private final Long userKcdBankAccountId;
-  private final LocalDateTime requestDate;
-  private final String fromAccountId;
-  private final String toAccountId;
-  private final Long amount;
+  @NonNull private final Long userId;
+  @NonNull private final Long userKcdBankAccountId;
+  @NonNull private final LocalDateTime requestDate;
+  @NonNull private final String fromAccountId;
+  @NonNull private final String toAccountId;
+  @NonNull private final Long amount;
 }
