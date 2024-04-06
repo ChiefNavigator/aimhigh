@@ -2,8 +2,8 @@ package com.lego.aimhigh.openapi.inbound.trasaction.interaction.controller.kcdba
 
 import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.KcdBankAccountDepositUseCase;
 import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.command.KcdBankAccountDepositCommand;
-import com.lego.aimhigh.openapi.inbound.trasaction.interaction.controller.kcdbankaccountdeposit.contant.KcdBankAccountDepositPayloadExceptionStatusCode;
-import com.lego.aimhigh.openapi.inbound.trasaction.interaction.controller.kcdbankaccountdeposit.exception.KcdBankAccountDepositException;
+import com.lego.aimhigh.openapi.inbound.trasaction.interaction.controller.kcdbankaccountdeposit.contant.KcdBankAccountDepositPayloadExceptionCode;
+import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.exception.KcdBankAccountDepositException;
 import com.lego.aimhigh.openapi.inbound.trasaction.interaction.controller.kcdbankaccountdeposit.exception.KcdBankAccountDepositPayloadException;
 import com.lego.aimhigh.openapi.inbound.trasaction.interaction.controller.kcdbankaccountdeposit.model.KcdBankAccountDepositPayload;
 import com.lego.aimhigh.openapi.inbound.trasaction.interaction.controller.model.ResultVo;
@@ -56,7 +56,7 @@ public class KcdBankAccountDepositRestController {
       || StringUtils.isEmpty(payload.getToAccountId())
       || payload.getAmount() == null
     ) {
-      throw new KcdBankAccountDepositPayloadException(KcdBankAccountDepositPayloadExceptionStatusCode.INVALID_PARAMETER);
+      throw new KcdBankAccountDepositPayloadException(KcdBankAccountDepositPayloadExceptionCode.INVALID_PARAMETER);
     }
   }
 }

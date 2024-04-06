@@ -1,6 +1,6 @@
 package com.lego.aimhigh.openapi.inbound.trasaction.interaction.controller.model;
 
-import com.lego.aimhigh.openapi.inbound.trasaction.interaction.contant.ResultVoStatusCode;
+import com.lego.aimhigh.openapi.inbound.trasaction.domain.contant.StatusCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -16,10 +16,10 @@ public class ResultVo<T> {
   private final T data;
 
   public static ResultVo<Void> buildFail(String message) {
-    return ResultVo.of(ResultVoStatusCode.FAIL, message, null);
+    return ResultVo.of(StatusCode.FAIL, message, null);
   }
 
   public static ResultVo<Void> buildSuccess() {
-    return ResultVo.of(ResultVoStatusCode.SUCCESS, null, null);
+    return ResultVo.of(StatusCode.SUCCESS, null, null);
   }
 }

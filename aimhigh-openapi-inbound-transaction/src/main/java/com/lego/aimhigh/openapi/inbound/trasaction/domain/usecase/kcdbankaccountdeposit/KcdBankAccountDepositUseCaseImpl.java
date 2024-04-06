@@ -31,14 +31,13 @@ public class KcdBankAccountDepositUseCaseImpl implements KcdBankAccountDepositUs
       bizRemitRequest,
       BizRemitRequestStatus.REQUEST
     );
-
     final KcdBankAccount kcdBankAccount = getKcdBankAccountModel.getKcdBankAccount(command.getUserKcdBankAccountId());
-    openApiAccountTransferModel.send(bizRemitRequest, kcdBankAccount);
-
     createBizRemitRequestRecordModel.createBizRemitRequestRecord(
       bizRemitRequest,
       BizRemitRequestStatus.KCD_ACCOUNT_DEPOSIT_PENDING
     );
+
+    openApiAccountTransferModel.send(bizRemitRequest, kcdBankAccount);
 
     return bizRemitRequest.getId();
   }
@@ -47,13 +46,11 @@ public class KcdBankAccountDepositUseCaseImpl implements KcdBankAccountDepositUs
   @Transactional
   public void depositToKcdBankAccount(KcdBankAccountDepositCommand command, Long bizRemitRequestId) {
     final KcdBankAccount kcdBankAccount = updateKcdBankAccountModel.updateAmount(command);
-
     createKcdBankAccountRecordModel.createKcdBankAccountRecord(
       kcdBankAccount,
       KcdBankAccountAction.DEPOSIT,
       command.getUserId()
     );
-
     createBizRemitRequestRecordModel.createBizRemitRequestRecord(
       getBizRemitRequestModel.getBizRemitRequest(bizRemitRequestId),
       BizRemitRequestStatus.KCD_ACCOUNT_DEPOSIT_PENDING
