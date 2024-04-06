@@ -1,4 +1,6 @@
 rootProject.name = 'aimhigh'
-include 'aimhigh-core'
+
 include 'aimhigh-batch'
+include 'aimhigh-openapi-inbound-transaction'
+include 'aimhigh-channel'
 

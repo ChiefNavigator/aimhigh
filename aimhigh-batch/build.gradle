@@ -1,3 +1,11 @@
+group = 'com.lego.aimhigh.batch'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
 dependencies {
-    implementation project(':aimhigh-core')
+
+    runtimeOnly 'com.mysql:mysql-connector-j'
 }
