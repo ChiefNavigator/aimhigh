@@ -5,5 +5,5 @@ import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.command.BizR
 
 public interface UpdateKcdBankAccountModel {
 
-  KcdBankAccount updateAmount(BizRemitRequestCommand command);
+  KcdBankAccount updateAmount(KcdBankAccount kcdBankAccount, Long userId);
 }

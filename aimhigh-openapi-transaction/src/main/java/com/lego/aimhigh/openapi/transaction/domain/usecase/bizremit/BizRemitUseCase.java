@@ -6,4 +6,5 @@ public interface BizRemitUseCase {
 
   Long createBizRemitRequest(BizRemitRequestCommand command);
   void depositToKcdBankAccount(BizRemitRequestCommand command, Long bizRemitRequestId);
+  void withdrawalFromKcdBankAccount(BizRemitRequestCommand command, Long bizRemitRequestId);
 }

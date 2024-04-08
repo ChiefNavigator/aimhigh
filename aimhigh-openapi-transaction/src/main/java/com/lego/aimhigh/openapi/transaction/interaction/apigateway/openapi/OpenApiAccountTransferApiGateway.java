@@ -3,6 +3,7 @@ package com.lego.aimhigh.openapi.transaction.interaction.apigateway.openapi;
 import com.lego.aimhigh.openapi.transaction.config.annotation.ApiGateway;
 import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.KcdBankAccount;
 import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.contant.BankCode;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.contant.KcdBankAccountAction;
 import com.lego.aimhigh.openapi.transaction.domain.entity.bizremit.BizRemitRequest;
 import com.lego.aimhigh.openapi.transaction.domain.entity.user.User;
 import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.constant.BizRemitExceptionCode;
@@ -20,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 
 import java.util.Collections;
-import java.util.concurrent.CompletableFuture;
 
 @ApiGateway
 @Slf4j
@@ -30,29 +30,27 @@ public class OpenApiAccountTransferApiGateway implements OpenApiAccountTransferM
   private final RestTemplate restTemplate;
 
   @Override
-  public CompletableFuture<Void> send(BizRemitRequest bizRemitRequest, KcdBankAccount kcdBankAccount) {
-    return CompletableFuture.runAsync(() -> {
-      HttpHeaders headers = createHeaders();
-      AccountTransferRequestBody requestBody = buildAccountTransferBody(bizRemitRequest, kcdBankAccount);
-      HttpEntity<AccountTransferRequestBody> requestEntity = new HttpEntity<>(requestBody, headers);
-      ResponseEntity<AccountTransferResponse> responseEntity = null;
+  public void send(BizRemitRequest bizRemitRequest, KcdBankAccount kcdBankAccount, KcdBankAccountAction accountAction) {
+    HttpHeaders headers = createHeaders();
+    AccountTransferRequestBody requestBody = buildAccountTransferBody(bizRemitRequest, kcdBankAccount, accountAction);
+    HttpEntity<AccountTransferRequestBody> requestEntity = new HttpEntity<>(requestBody, headers);
+    ResponseEntity<AccountTransferResponse> responseEntity = null;
 
-      try {
-        responseEntity = restTemplate.exchange(
-          AccountTransferConstant.OPENAPI_ACCOUNT_TRANSFER_URL,
-          HttpMethod.POST,
-          requestEntity,
-          AccountTransferResponse.class
-        );
-      } catch (Exception ex) {
-        log.error("BizRequestFail Cause:Exception occurred during OpenAPI account transfer. bizRemitRequestId: {}", bizRemitRequest.getId(), ex);
-      }
+    try {
+      responseEntity = restTemplate.exchange(
+        AccountTransferConstant.OPENAPI_ACCOUNT_TRANSFER_URL,
+        HttpMethod.POST,
+        requestEntity,
+        AccountTransferResponse.class
+      );
+    } catch (Exception ex) {
+      log.error("BizRequestFail Cause: OpenAPI account transfer failed. bizRemitRequestId: {}, accountAction: {}", bizRemitRequest.getId(), accountAction, ex);
+    }
 
-      if (isFailedAccountTransfer(responseEntity)) {
-        log.error("BizRequestFail Cause:OpenAPI account transfer failed. bizRemitRequestId: {}", bizRemitRequest.getId());
-        throw new BizRemitException(BizRemitExceptionCode.OPEN_API_ACCOUNT_TRANSFER_FAIL);
-      }
-    });
+    if (isFailedAccountTransfer(responseEntity)) {
+      log.error("BizRequestFail Cause: OpenAPI account transfer failed. bizRemitRequestId: {}, accountAction: {}", bizRemitRequest.getId(), accountAction);
+      throw new BizRemitException(BizRemitExceptionCode.OPEN_API_ACCOUNT_TRANSFER_FAIL, bizRemitRequest.getId());
+    }
   }
 
   private HttpHeaders createHeaders() {
@@ -78,20 +76,37 @@ public class OpenApiAccountTransferApiGateway implements OpenApiAccountTransferM
 
   private AccountTransferRequestBody buildAccountTransferBody(
     BizRemitRequest bizRemitRequest,
-    KcdBankAccount kcdBankAccount
+    KcdBankAccount kcdBankAccount,
+    KcdBankAccountAction accountAction
   ) {
     final String kcdBankAccountNumber = kcdBankAccount.getAccountNumber();
     final User user = kcdBankAccount.getUser();
     final String username = user.getName();
+    final String fromAccountNumber;
+    final String fromAccountPrintContent;
+    final String toAccountNumber;
+    final String toAccountPrintContent;
+
+    if (KcdBankAccountAction.DEPOSIT == accountAction) {
+      fromAccountNumber = bizRemitRequest.getFromAccountId();
+      fromAccountPrintContent = "KcdBankAccount 계좌 이체";
+      toAccountNumber = kcdBankAccountNumber;
+      toAccountPrintContent = "BizBankAccount 계좌 이체";
+    } else {
+      fromAccountNumber = kcdBankAccountNumber;
+      fromAccountPrintContent = "BizBankAccount 계좌 이체";
+      toAccountNumber = bizRemitRequest.getFromAccountId();
+      toAccountPrintContent = "KcdBankAccount 계좌 이체";
+    }
 
     AccountTransferRequest request = AccountTransferRequest.builder()
       .tran_no(String.valueOf(bizRemitRequest.getId()))
       .bank_tran_id(bizRemitRequest.getBankTransactionId())
       .bank_code_std(BankCode.KOREA_BANK)
-      .account_num(kcdBankAccountNumber)
+      .account_num(toAccountNumber)
       .account_seq(null)
       .account_holder_name(username)
-      .print_content("BizBankAccount 입금")
+      .print_content(toAccountPrintContent)
       .tran_amt(String.valueOf(bizRemitRequest.getAmount()))
       .req_client_name(username)
       .req_client_bank_code(null)
@@ -106,9 +121,9 @@ public class OpenApiAccountTransferApiGateway implements OpenApiAccountTransferM
 
     return AccountTransferRequestBody.builder()
       .cntr_account_type(AccountTransferConstant.CNTR_ACCOUNT_TYP)
-      .cntr_account_num(kcdBankAccountNumber)
+      .cntr_account_num(fromAccountNumber)
       .wd_pass_phrase("790d56ed........821a69")
-      .wd_print_content("KcdBankAccount 계좌 이체")
+      .wd_print_content(fromAccountPrintContent)
       .name_check_option(AccountTransferConstant.NAME_CHECK_OPTION)
       .sub_frnc_name(null)
       .sub_frnc_num(null)

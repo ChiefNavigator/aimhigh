@@ -8,6 +8,6 @@ import lombok.Getter;
 public class BizRemitPayloadException extends BizRemitException {
 
   public BizRemitPayloadException(BizRemitRequestPayloadExceptionCode code) {
-    super(code.getStatusCode(), code.getMessage());
+    super(code.getStatusCode(), code.getMessage(), null);
   }
 }

@@ -46,11 +46,16 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
   public Long createBizRemitRequest(BizRemitRequestCommand command) {
     BizRemitRequest createdBizRemitRequest = getBizRemitRequestModel.getBizRemitRequest(command.getBankTransactionId());
     if (createdBizRemitRequest != null) {
-      Integer retryCount = updateBizRemitRequestModel.increaseRetryCount(createdBizRemitRequest.getId(), command.getUserId());
+      final int retryCount = createdBizRemitRequest.getRetryCount() + 1;
+      final BizRemitRequestStatus bizRemitRequestStatus = retryCount >= MAX_RETRY_COUNT ? BizRemitRequestStatus.FAIL : createdBizRemitRequest.getStatus();
+      createdBizRemitRequest.setRetryCount(retryCount + 1);
+      createdBizRemitRequest.setStatus(bizRemitRequestStatus);
+      updateBizRemitRequestModel.updateBizRemitRequest(createdBizRemitRequest);
+
       if (retryCount >= MAX_RETRY_COUNT) {
-        updateBizRemitRequestModel.updateRequestStatusFail(createdBizRemitRequest.getId(), command.getUserId());
+//        Slack Alert
         log.error("BizRequestFail Cause: MaxRetryCount of attempts was exceeded. bizRemitRequestId: {}", createdBizRemitRequest.getId());
-        throw new BizRemitException(BizRemitExceptionCode.EXCEED_MAX_RETRY_COUNT);
+        throw new BizRemitException(BizRemitExceptionCode.EXCEED_MAX_RETRY_COUNT, createdBizRemitRequest.getId());
       }
 
       return createdBizRemitRequest.getId();
@@ -62,14 +67,11 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
       BizRemitRequestStatus.REQUEST
     );
     final KcdBankAccount kcdBankAccount = getKcdBankAccountModel.getKcdBankAccount(command.getUserKcdBankAccountId());
-
-    openApiAccountTransferModel.send(bizRemitRequest, kcdBankAccount)
-      .thenRun(() ->
-        createBizRemitRequestRecordModel.createBizRemitRequestRecord(
-          bizRemitRequest,
-          BizRemitRequestStatus.KCD_ACCOUNT_DEPOSIT_PENDING
-        )
-      );
+    createBizRemitRequestRecordModel.createBizRemitRequestRecord(
+      bizRemitRequest,
+      BizRemitRequestStatus.KCD_ACCOUNT_DEPOSIT_PENDING
+    );
+    openApiAccountTransferModel.send(bizRemitRequest, kcdBankAccount, KcdBankAccountAction.DEPOSIT);
 
     return bizRemitRequest.getId();
   }
@@ -79,11 +81,15 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
   public void depositToKcdBankAccount(BizRemitRequestCommand command, Long bizRemitRequestId) {
     KcdBankAccountRecord kcdBankAccountRecord = getKcdBankAccountRecordModel.getKcdBankAccountRecord(command.getBankTransactionId());
     if (kcdBankAccountRecord != null) {
-      log.warn("OpenAPI account transfer failed. bizRemitRequestId: {}", bizRemitRequestId);
+      log.warn("BizRequestFail Cause: Deposit to KcdBankAccount failed. bizRemitRequestId: {}", bizRemitRequestId);
       return;
     }
 
-    final KcdBankAccount kcdBankAccount = updateKcdBankAccountModel.updateAmount(command);
+    final KcdBankAccount kcdBankAccount = getKcdBankAccountModel.getKcdBankAccount(command.getUserKcdBankAccountId());
+    final Long amount = kcdBankAccount.getAmount() + command.getAmount();
+    kcdBankAccount.setAmount(amount);
+    updateKcdBankAccountModel.updateAmount(kcdBankAccount, command.getUserId());
+
     createKcdBankAccountRecordModel.createKcdBankAccountRecord(
       kcdBankAccount,
       KcdBankAccountAction.DEPOSIT,
@@ -91,11 +97,41 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
       command.getBankTransactionId()
     );
 
-
     createBizRemitRequestRecordModel.createBizRemitRequestRecord(
       getBizRemitRequestModel.getBizRemitRequest(bizRemitRequestId),
       BizRemitRequestStatus.KCD_ACCOUNT_DEPOSIT_COMPLETED
     );
+  }
+
+  @Override
+  @Transactional
+  public void withdrawalFromKcdBankAccount(BizRemitRequestCommand command, Long bizRemitRequestId) {
+    final BizRemitRequest bizRemitRequest = getBizRemitRequestModel.getBizRemitRequest(command.getBankTransactionId());
+    final KcdBankAccount kcdBankAccount = getKcdBankAccountModel.getKcdBankAccount(command.getUserKcdBankAccountId());
+    final Long amount = kcdBankAccount.getAmount() - command.getAmount();
+    kcdBankAccount.setAmount(amount);
+    updateKcdBankAccountModel.updateAmount(kcdBankAccount, command.getUserId());
+
+    createKcdBankAccountRecordModel.createKcdBankAccountRecord(
+      kcdBankAccount,
+      KcdBankAccountAction.WITHDRAWAL,
+      command.getUserId(),
+      command.getBankTransactionId()
+    );
+
+    createBizRemitRequestRecordModel.createBizRemitRequestRecord(
+      getBizRemitRequestModel.getBizRemitRequest(bizRemitRequestId),
+      BizRemitRequestStatus.KCD_ACCOUNT_WITHDRAWAL_COMPLETED
+    );
+    createBizRemitRequestRecordModel.createBizRemitRequestRecord(
+      getBizRemitRequestModel.getBizRemitRequest(bizRemitRequestId),
+      BizRemitRequestStatus.DONE
+    );
+
+    bizRemitRequest.setStatus(BizRemitRequestStatus.DONE);
+    updateBizRemitRequestModel.updateBizRemitRequest(bizRemitRequest);
+
+    openApiAccountTransferModel.send(bizRemitRequest, kcdBankAccount, KcdBankAccountAction.WITHDRAWAL);
   }
 
 }

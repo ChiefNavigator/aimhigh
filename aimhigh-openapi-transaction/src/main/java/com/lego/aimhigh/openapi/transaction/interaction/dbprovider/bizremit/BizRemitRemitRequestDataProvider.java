@@ -90,23 +90,13 @@ public class BizRemitRemitRequestDataProvider implements
   }
 
   @Override
-  public Integer increaseRetryCount(Long id, Long userId) {
-    JpaBizRemitRequest jpaBizRemitRequest = jpaBizRemitRequestFindById(id);
-    final Integer retryCount = jpaBizRemitRequest.getRetryCount();
-    jpaBizRemitRequest.setRetryCount(retryCount + 1);
+  @Transactional
+  public void updateBizRemitRequest(BizRemitRequest request) {
+    JpaBizRemitRequest jpaBizRemitRequest = jpaBizRemitRequestFindById(request.getId());
+    jpaBizRemitRequest.setRetryCount(request.getRetryCount());
+    jpaBizRemitRequest.setStatus(BizRemitRequestStatusMapper.to(request.getStatus()));
     LocalDateTime now = LocalDateTime.now();
-    jpaBizRemitRequest.setUpdatedBy(String.valueOf(userId));
-    jpaBizRemitRequest.setUpdatedAt(now);
-
-    return null;
-  }
-
-  @Override
-  public void updateRequestStatusFail(Long id, Long userId) {
-    JpaBizRemitRequest jpaBizRemitRequest = jpaBizRemitRequestFindById(id);
-    jpaBizRemitRequest.setStatus(JpaBizRemitRequestStatus.FAIL);
-    LocalDateTime now = LocalDateTime.now();
-    jpaBizRemitRequest.setUpdatedBy(String.valueOf(userId));
+    jpaBizRemitRequest.setUpdatedBy(String.valueOf(request.getUserId()));
     jpaBizRemitRequest.setUpdatedAt(now);
   }
 }

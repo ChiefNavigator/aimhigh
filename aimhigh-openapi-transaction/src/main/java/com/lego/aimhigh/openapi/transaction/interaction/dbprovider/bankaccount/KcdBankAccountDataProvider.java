@@ -29,11 +29,10 @@ public class KcdBankAccountDataProvider implements
 
   @Override
   @Transactional
-  public KcdBankAccount updateAmount(BizRemitRequestCommand command) {
-    JpaKcdBankAccount jpaKcdBankAccount = getJpaKcdBankAccount(command.getUserKcdBankAccountId());
-    final Long baseAmount = jpaKcdBankAccount.getAmount();
-    jpaKcdBankAccount.setAmount(baseAmount + command.getAmount());
-    jpaKcdBankAccount.setUpdatedBy(String.valueOf(command.getUserId()));
+  public KcdBankAccount updateAmount(KcdBankAccount kcdBankAccount, Long userId) {
+    JpaKcdBankAccount jpaKcdBankAccount = getJpaKcdBankAccount(kcdBankAccount.getId());
+    jpaKcdBankAccount.setAmount(kcdBankAccount.getAmount());
+    jpaKcdBankAccount.setUpdatedBy(String.valueOf(userId));
     jpaKcdBankAccount.setUpdatedAt(LocalDateTime.now());
 
     return JpaKcdBankAccountEntityMapper.to(kcdBankAccountRepository.save(jpaKcdBankAccount));
