@@ -24,6 +24,7 @@ public class JpaKcdBankAccountEntityMapper {
   public static KcdBankAccountRecord to(JpaKcdBankAccountRecord record) {
     KcdBankAccountRecord kcdBankAccountRecord = new KcdBankAccountRecord();
     kcdBankAccountRecord.setId(record.getId());
+    kcdBankAccountRecord.setBankTransactionId(record.getBankTransactionId());
     kcdBankAccountRecord.setKcdBankAccount(to(record.getKcdBankAccount()));
     kcdBankAccountRecord.setAction(JpaKcdBankAccountActionMapper.to(record.getAction()));
 

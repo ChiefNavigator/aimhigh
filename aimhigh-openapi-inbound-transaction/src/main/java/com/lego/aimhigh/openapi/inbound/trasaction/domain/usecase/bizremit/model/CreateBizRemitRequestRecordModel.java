@@ -1,4 +1,4 @@
-package com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.model;
+package com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.bizremit.model;
 
 
 import com.lego.aimhigh.openapi.inbound.trasaction.domain.entity.bizremit.BizRemitRequest;
@@ -8,5 +8,4 @@ import com.lego.aimhigh.openapi.inbound.trasaction.domain.entity.bizremit.contan
 public interface CreateBizRemitRequestRecordModel {
 
   BizRemitRequestRecord createBizRemitRequestRecord(BizRemitRequest bizRemitRequest, BizRemitRequestStatus jpaBizRemitRequestStatus);
-
 }

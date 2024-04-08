@@ -19,6 +19,9 @@ public class JpaKcdBankAccountRecord extends JpaModelCreatable {
   @Column
   private Long id;
 
+  @Column(unique = true)
+  private String bankTransactionId;
+
   @ManyToOne
   @JoinColumn(name = "kcdBankAccountId")
   private JpaKcdBankAccount kcdBankAccount;

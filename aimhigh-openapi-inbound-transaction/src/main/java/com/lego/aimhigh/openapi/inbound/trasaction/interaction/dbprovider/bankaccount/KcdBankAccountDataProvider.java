@@ -4,10 +4,11 @@ import com.lego.aimhigh.openapi.inbound.trasaction.domain.entity.bankaccount.Kcd
 import com.lego.aimhigh.openapi.inbound.trasaction.domain.entity.bankaccount.KcdBankAccountRecord;
 import com.lego.aimhigh.openapi.inbound.trasaction.domain.entity.bankaccount.contant.KcdBankAccountAction;
 import com.lego.aimhigh.openapi.inbound.trasaction.domain.entity.bankaccount.mapper.KcdBankAccountActionMapper;
-import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.command.KcdBankAccountDepositCommand;
-import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.model.CreateKcdBankAccountRecordModel;
-import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.model.GetKcdBankAccountModel;
-import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.model.UpdateKcdBankAccountModel;
+import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.bizremit.command.BizRemitRequestCommand;
+import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.bizremit.model.CreateKcdBankAccountRecordModel;
+import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.bizremit.model.GetKcdBankAccountModel;
+import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.bizremit.model.GetKcdBankAccountRecordModel;
+import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.bizremit.model.UpdateKcdBankAccountModel;
 import com.lego.aimhigh.openapi.inbound.trasaction.interaction.dbprovider.bankaccount.mapper.JpaKcdBankAccountEntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -17,14 +18,18 @@ import java.time.LocalDateTime;
 
 @Repository
 @RequiredArgsConstructor
-public class KcdBankAccountDataProvider implements UpdateKcdBankAccountModel, CreateKcdBankAccountRecordModel, GetKcdBankAccountModel {
+public class KcdBankAccountDataProvider implements
+  UpdateKcdBankAccountModel,
+  CreateKcdBankAccountRecordModel,
+  GetKcdBankAccountModel,
+  GetKcdBankAccountRecordModel {
 
   private final KcdBankAccountRepository kcdBankAccountRepository;
   private final KcdBankAccountRecordRepository kcdBankAccountRecordRepository;
 
   @Override
   @Transactional
-  public KcdBankAccount updateAmount(KcdBankAccountDepositCommand command) {
+  public KcdBankAccount updateAmount(BizRemitRequestCommand command) {
     JpaKcdBankAccount jpaKcdBankAccount = getJpaKcdBankAccount(command.getUserKcdBankAccountId());
     final Long baseAmount = jpaKcdBankAccount.getAmount();
     jpaKcdBankAccount.setAmount(baseAmount + command.getAmount());
@@ -36,8 +41,14 @@ public class KcdBankAccountDataProvider implements UpdateKcdBankAccountModel, Cr
 
   @Override
   @Transactional
-  public KcdBankAccountRecord createKcdBankAccountRecord(KcdBankAccount kcdBankAccount, KcdBankAccountAction kcdBankAccountAction, Long userId) {
+  public KcdBankAccountRecord createKcdBankAccountRecord(
+    KcdBankAccount kcdBankAccount,
+    KcdBankAccountAction kcdBankAccountAction,
+    Long userId,
+    String bankTransactionId
+  ) {
     JpaKcdBankAccountRecord jpaKcdBankAccountRecord = new JpaKcdBankAccountRecord();
+    jpaKcdBankAccountRecord.setBankTransactionId(bankTransactionId);
     jpaKcdBankAccountRecord.setKcdBankAccount(getJpaKcdBankAccount(kcdBankAccount.getId()));
     jpaKcdBankAccountRecord.setAction(KcdBankAccountActionMapper.to(kcdBankAccountAction));
     jpaKcdBankAccountRecord.setDeleted(false);
@@ -59,4 +70,12 @@ public class KcdBankAccountDataProvider implements UpdateKcdBankAccountModel, Cr
     return JpaKcdBankAccountEntityMapper.to(getJpaKcdBankAccount(id));
   }
 
+  @Override
+  public KcdBankAccountRecord getKcdBankAccountRecord(String bankTransactionId) {
+    return JpaKcdBankAccountEntityMapper.to(getJpaKcdBankAccountRecord(bankTransactionId));
+  }
+
+  private JpaKcdBankAccountRecord getJpaKcdBankAccountRecord(String bankTransactionId) {
+    return kcdBankAccountRecordRepository.findJpaKcdBankAccountRecordByBankTransactionId(bankTransactionId).orElseThrow();
+  }
 }

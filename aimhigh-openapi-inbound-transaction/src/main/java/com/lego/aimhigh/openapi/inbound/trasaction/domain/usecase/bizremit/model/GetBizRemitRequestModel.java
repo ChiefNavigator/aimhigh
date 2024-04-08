@@ -1,4 +1,4 @@
-package com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.model;
+package com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.bizremit.model;
 
 
 import com.lego.aimhigh.openapi.inbound.trasaction.domain.entity.bizremit.BizRemitRequest;
@@ -6,5 +6,5 @@ import com.lego.aimhigh.openapi.inbound.trasaction.domain.entity.bizremit.BizRem
 public interface GetBizRemitRequestModel {
 
   BizRemitRequest getBizRemitRequest(Long id);
-
+  BizRemitRequest getBizRemitRequest(String bankTransactionId);
 }

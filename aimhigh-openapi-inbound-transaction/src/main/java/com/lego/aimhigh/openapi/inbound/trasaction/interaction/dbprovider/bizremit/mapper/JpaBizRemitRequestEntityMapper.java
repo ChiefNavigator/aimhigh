@@ -13,6 +13,7 @@ public class JpaBizRemitRequestEntityMapper {
   public static BizRemitRequest to(JpaBizRemitRequest request) {
     BizRemitRequest bizRemitRequest = new BizRemitRequest();
     bizRemitRequest.setId(request.getId());
+    bizRemitRequest.setBankTransactionId(request.getBankTransactionId());
     bizRemitRequest.setUserId(request.getUserId());
     bizRemitRequest.setUserKcdBankAccountId(request.getUserKcdBankAccountId());
     bizRemitRequest.setRequestDate(request.getRequestDate());
@@ -20,6 +21,7 @@ public class JpaBizRemitRequestEntityMapper {
     bizRemitRequest.setToAccountId(request.getToAccountId());
     bizRemitRequest.setAmount(request.getAmount());
     bizRemitRequest.setStatus(JpaBizRemitRequestStatusMapper.to(request.getStatus()));
+    bizRemitRequest.setRetryCount(request.getRetryCount());
 
     return bizRemitRequest;
   }

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 public class BizRemitRequest {
   @NonNull private Long id;
+  @NonNull private String bankTransactionId;
   @NonNull private Long userId;
   @NonNull private Long userKcdBankAccountId;
   @NonNull private LocalDateTime requestDate;
@@ -18,4 +19,5 @@ public class BizRemitRequest {
   @NonNull private String toAccountId;
   @NonNull private Long amount;
   @NonNull private BizRemitRequestStatus status;
+  @NonNull private Integer retryCount;
 }

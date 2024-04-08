@@ -21,6 +21,9 @@ public class JpaBizRemitRequest extends JpaModelCreatable {
   @Column
   private Long id;
 
+  @Column(unique = true)
+  private String bankTransactionId;
+
   @Column
   private Long userId;
 
@@ -41,4 +44,7 @@ public class JpaBizRemitRequest extends JpaModelCreatable {
 
   @Column
   private JpaBizRemitRequestStatus status;
+
+  @Column
+  private Integer retryCount;
 }

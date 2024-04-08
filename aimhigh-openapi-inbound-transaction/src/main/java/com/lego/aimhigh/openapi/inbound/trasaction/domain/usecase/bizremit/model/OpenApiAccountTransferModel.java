@@ -1,8 +1,11 @@
-package com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.model;
+package com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.bizremit.model;
 
 import com.lego.aimhigh.openapi.inbound.trasaction.domain.entity.bankaccount.KcdBankAccount;
 import com.lego.aimhigh.openapi.inbound.trasaction.domain.entity.bizremit.BizRemitRequest;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface OpenApiAccountTransferModel {
-  void send(BizRemitRequest bizRemitRequest, KcdBankAccount kcdBankAccount);
+
+  CompletableFuture<Void> send(BizRemitRequest bizRemitRequest, KcdBankAccount kcdBankAccount);
 }

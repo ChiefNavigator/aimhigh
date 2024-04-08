@@ -5,10 +5,11 @@ import com.lego.aimhigh.openapi.inbound.trasaction.domain.entity.bizremit.BizRem
 import com.lego.aimhigh.openapi.inbound.trasaction.domain.entity.bizremit.BizRemitRequestRecord;
 import com.lego.aimhigh.openapi.inbound.trasaction.domain.entity.bizremit.contant.BizRemitRequestStatus;
 import com.lego.aimhigh.openapi.inbound.trasaction.domain.entity.bizremit.mapper.BizRemitRequestStatusMapper;
-import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.command.KcdBankAccountDepositCommand;
-import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.model.CreateBizRemitRequestRecordModel;
-import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.model.CreateBizRemitRequestModel;
-import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.model.GetBizRemitRequestModel;
+import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.bizremit.command.BizRemitRequestCommand;
+import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.bizremit.model.CreateBizRemitRequestRecordModel;
+import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.bizremit.model.CreateBizRemitRequestModel;
+import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.bizremit.model.GetBizRemitRequestModel;
+import com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.bizremit.model.UpdateBizRemitRequestModel;
 import com.lego.aimhigh.openapi.inbound.trasaction.interaction.dbprovider.bizremit.contant.JpaBizRemitRequestStatus;
 import com.lego.aimhigh.openapi.inbound.trasaction.interaction.dbprovider.bizremit.mapper.JpaBizRemitRequestEntityMapper;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +20,20 @@ import java.time.LocalDateTime;
 
 @Repository
 @RequiredArgsConstructor
-public class BizRemitRequestDataProvider implements CreateBizRemitRequestModel, CreateBizRemitRequestRecordModel, GetBizRemitRequestModel {
+public class BizRemitRemitRequestDataProvider implements
+  CreateBizRemitRequestModel,
+  UpdateBizRemitRequestModel,
+  GetBizRemitRequestModel,
+  CreateBizRemitRequestRecordModel {
 
   private final BizRemitRequestRepository bizRemitRequestRepository;
   private final BizRemitRequestRecordRepository bizRemitRequestRecordRepository;
 
   @Override
   @Transactional
-  public BizRemitRequest createBizRemitRequest(KcdBankAccountDepositCommand command) {
+  public BizRemitRequest createBizRemitRequest(BizRemitRequestCommand command) {
     JpaBizRemitRequest jpaBizRemitRequest = new JpaBizRemitRequest();
+    jpaBizRemitRequest.setBankTransactionId(command.getBankTransactionId());
     jpaBizRemitRequest.setUserId(command.getUserId());
     jpaBizRemitRequest.setUserKcdBankAccountId(command.getUserKcdBankAccountId());
     jpaBizRemitRequest.setRequestDate(command.getRequestDate());
@@ -35,6 +41,7 @@ public class BizRemitRequestDataProvider implements CreateBizRemitRequestModel, 
     jpaBizRemitRequest.setToAccountId(command.getToAccountId());
     jpaBizRemitRequest.setAmount(command.getAmount());
     jpaBizRemitRequest.setStatus(JpaBizRemitRequestStatus.REQUEST);
+    jpaBizRemitRequest.setRetryCount(0);
     jpaBizRemitRequest.setDeleted(false);
     LocalDateTime now = LocalDateTime.now();
     jpaBizRemitRequest.setCreatedBy(String.valueOf(command.getUserId()));
@@ -64,12 +71,42 @@ public class BizRemitRequestDataProvider implements CreateBizRemitRequestModel, 
     return JpaBizRemitRequestEntityMapper.to(bizRemitRequestRecordRepository.save(jpaBizRemitRequestRecord));
   }
 
+  @Override
+  public BizRemitRequest getBizRemitRequest(Long id) {
+    return JpaBizRemitRequestEntityMapper.to(jpaBizRemitRequestFindById(id));
+  }
+
   private JpaBizRemitRequest jpaBizRemitRequestFindById(Long id) {
     return bizRemitRequestRepository.findById(id).orElseThrow();
   }
 
   @Override
-  public BizRemitRequest getBizRemitRequest(Long id) {
-    return JpaBizRemitRequestEntityMapper.to(jpaBizRemitRequestFindById(id));
+  public BizRemitRequest getBizRemitRequest(String bankTransactionId) {
+    return JpaBizRemitRequestEntityMapper.to(jpaBizRemitRequestFindByBankTransactionId(bankTransactionId));
+  }
+
+  private JpaBizRemitRequest jpaBizRemitRequestFindByBankTransactionId(String bankTransactionId) {
+    return bizRemitRequestRepository.findJpaBizRemitRequestByBankTransactionId(bankTransactionId).orElseThrow();
+  }
+
+  @Override
+  public Integer increaseRetryCount(Long id, Long userId) {
+    JpaBizRemitRequest jpaBizRemitRequest = jpaBizRemitRequestFindById(id);
+    final Integer retryCount = jpaBizRemitRequest.getRetryCount();
+    jpaBizRemitRequest.setRetryCount(retryCount + 1);
+    LocalDateTime now = LocalDateTime.now();
+    jpaBizRemitRequest.setUpdatedBy(String.valueOf(userId));
+    jpaBizRemitRequest.setUpdatedAt(now);
+
+    return null;
+  }
+
+  @Override
+  public void updateRequestStatusFail(Long id, Long userId) {
+    JpaBizRemitRequest jpaBizRemitRequest = jpaBizRemitRequestFindById(id);
+    jpaBizRemitRequest.setStatus(JpaBizRemitRequestStatus.FAIL);
+    LocalDateTime now = LocalDateTime.now();
+    jpaBizRemitRequest.setUpdatedBy(String.valueOf(userId));
+    jpaBizRemitRequest.setUpdatedAt(now);
   }
 }

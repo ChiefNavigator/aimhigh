@@ -1,4 +1,4 @@
-package com.lego.aimhigh.openapi.inbound.trasaction.interaction.controller.kcdbankaccountdeposit.model;
+package com.lego.aimhigh.openapi.inbound.trasaction.interaction.controller.bizremit.model;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class KcdBankAccountDepositPayload {
+public class BizRemitRequestPayload {
+  private final String bankTransactionId;
   private final Long userId;
   private final Long userKcdBankAccountId;
   private final LocalDateTime requestDate;

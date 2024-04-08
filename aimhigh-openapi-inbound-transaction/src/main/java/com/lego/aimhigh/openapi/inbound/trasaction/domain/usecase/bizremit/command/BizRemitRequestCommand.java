@@ -1,4 +1,4 @@
-package com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.kcdbankaccountdeposit.command;
+package com.lego.aimhigh.openapi.inbound.trasaction.domain.usecase.bizremit.command;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class KcdBankAccountDepositCommand {
+public class BizRemitRequestCommand {
+  @NonNull private final String bankTransactionId;
   @NonNull private final Long userId;
   @NonNull private final Long userKcdBankAccountId;
   @NonNull private final LocalDateTime requestDate;

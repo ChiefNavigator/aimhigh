@@ -19,6 +19,10 @@ public class ResultVo<T> {
     return ResultVo.of(StatusCode.FAIL, message, null);
   }
 
+  public static <T> ResultVo<T> buildSuccess(T data) {
+    return ResultVo.of(StatusCode.SUCCESS, null, data);
+  }
+
   public static ResultVo<Void> buildSuccess() {
     return ResultVo.of(StatusCode.SUCCESS, null, null);
   }
