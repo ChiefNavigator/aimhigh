@@ -12,8 +12,6 @@ allprojects {
     }
 }
 
-bootJar.enabled = false
-
 subprojects {
     apply plugin: 'java'
     apply plugin: 'groovy'

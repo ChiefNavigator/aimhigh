@@ -1,0 +1,35 @@
+services:
+  redis:
+    image: redis:7.2.4
+    ports:
+      - "6379:6379"
+
+  mysql:
+    image: mysql:5.7
+    platform: linux/amd64
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sandbox
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+
+  spring-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/sandbox?rewriteBatchedStatements=true&useUnicode=true&characterEncoding=UTF8&connectTimeout=5000&socketTimeout=120000&serverTimezone=Asia/Seoul
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_BATCH_JDBC_INITIALIZE_SCHEMA: always
+      AIMHIGH_OPENAPI_TRANSACTION_ISMOCKINGMODE: "true"
