@@ -1,5 +1,6 @@
 package com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bankaccount;
 
+import com.lego.aimhigh.openapi.transaction.config.annotation.DistributedLock;
 import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.KcdBankAccount;
 import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.KcdBankAccountRecord;
 import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.contant.KcdBankAccountAction;
@@ -9,7 +10,6 @@ import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.GetKcd
 import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.GetKcdBankAccountRecordModel;
 import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.UpdateKcdBankAccountModel;
 import com.lego.aimhigh.openapi.transaction.domain.usecase.kcdbankaccount.model.CreateKcdBankAccountModel;
-import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bankaccount.contant.JpaKcdBankAccountAction;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bankaccount.mapper.JpaKcdBankAccountEntityMapper;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.user.JpaUser;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.user.UserRepository;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -52,10 +51,21 @@ public class KcdBankAccountDataProvider implements
 
 
   @Override
-  @Transactional
-  public KcdBankAccount updateAmount(KcdBankAccount kcdBankAccount, Long userId) {
+  @DistributedLock(key = "'amount_' + #userId")
+  public KcdBankAccount amountDeposit(KcdBankAccount kcdBankAccount, Long amount, Long userId) {
     JpaKcdBankAccount jpaKcdBankAccount = getJpaKcdBankAccount(kcdBankAccount.getId());
-    jpaKcdBankAccount.setAmount(kcdBankAccount.getAmount());
+    jpaKcdBankAccount.setAmount(kcdBankAccount.getAmount() + amount);
+    jpaKcdBankAccount.setUpdatedBy(String.valueOf(userId));
+    jpaKcdBankAccount.setUpdatedAt(LocalDateTime.now());
+
+    return JpaKcdBankAccountEntityMapper.to(kcdBankAccountRepository.save(jpaKcdBankAccount));
+  }
+
+  @Override
+  @DistributedLock(key = "'amount_' + #userId")
+  public KcdBankAccount amountWithdrawal(KcdBankAccount kcdBankAccount, Long amount, Long userId) {
+    JpaKcdBankAccount jpaKcdBankAccount = getJpaKcdBankAccount(kcdBankAccount.getId());
+    jpaKcdBankAccount.setAmount(kcdBankAccount.getAmount() - amount);
     jpaKcdBankAccount.setUpdatedBy(String.valueOf(userId));
     jpaKcdBankAccount.setUpdatedAt(LocalDateTime.now());
 
@@ -94,6 +104,7 @@ public class KcdBankAccountDataProvider implements
   public KcdBankAccount getKcdBankAccount(Long id) {
     return JpaKcdBankAccountEntityMapper.to(getJpaKcdBankAccount(id));
   }
+
   @Override
   public KcdBankAccountRecord getNullableKcdBankAccountRecord(String bankTransactionId, KcdBankAccountAction action) {
     return kcdBankAccountRecordRepository

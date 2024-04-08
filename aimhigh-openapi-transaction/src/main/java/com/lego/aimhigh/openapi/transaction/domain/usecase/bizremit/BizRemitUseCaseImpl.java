@@ -105,9 +105,7 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
     }
 
     final KcdBankAccount kcdBankAccount = getKcdBankAccountModel.getKcdBankAccount(command.getUserKcdBankAccountId());
-    final Long amount = kcdBankAccount.getAmount() + command.getAmount();
-    kcdBankAccount.setAmount(amount);
-    updateKcdBankAccountModel.updateAmount(kcdBankAccount, command.getUserId());
+    updateKcdBankAccountModel.amountDeposit(kcdBankAccount, command.getAmount(), command.getUserId());
 
     createKcdBankAccountRecordModel.createKcdBankAccountRecord(
       kcdBankAccount,
@@ -133,9 +131,7 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
     }
 
     final KcdBankAccount kcdBankAccount = getKcdBankAccountModel.getKcdBankAccount(command.getUserKcdBankAccountId());
-    final Long amount = kcdBankAccount.getAmount() - command.getAmount();
-    kcdBankAccount.setAmount(amount);
-    updateKcdBankAccountModel.updateAmount(kcdBankAccount, command.getUserId());
+    updateKcdBankAccountModel.amountWithdrawal(kcdBankAccount, command.getAmount(), command.getUserId());
 
     createKcdBankAccountRecordModel.createKcdBankAccountRecord(
       kcdBankAccount,
