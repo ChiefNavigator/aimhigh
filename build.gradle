@@ -5,8 +5,6 @@ plugins {
 }
 
 allprojects {
-    group = 'com.lego.aimhigh'
-    version = '0.0.1-SNAPSHOT'
     sourceCompatibility = '17'
 
     repositories {
@@ -36,14 +34,10 @@ subprojects {
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
 
-        implementation 'org.springframework.boot:spring-boot-starter-web'
-        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
         testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
         testImplementation 'org.spockframework:spock-spring:2.3-groovy-3.0'
 
-        runtimeOnly 'com.mysql:mysql-connector-j'
     }
 
     tasks.named('test') {

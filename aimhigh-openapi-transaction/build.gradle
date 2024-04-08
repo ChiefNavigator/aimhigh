@@ -1,0 +1,14 @@
+group = 'com.lego.aimhigh.openapi.transaction'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.redisson:redisson-spring-boot-starter:3.18.0'
+
+    runtimeOnly 'com.mysql:mysql-connector-j'
+}
