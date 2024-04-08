@@ -19,7 +19,7 @@ public class JpaKcdBankAccountRecord extends JpaModelCreatable {
   @Column
   private Long id;
 
-  @Column(unique = true)
+  @Column
   private String bankTransactionId;
 
   @ManyToOne

@@ -4,11 +4,11 @@ import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.KcdBankAcc
 import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.KcdBankAccountRecord;
 import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.contant.KcdBankAccountAction;
 import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.mapper.KcdBankAccountActionMapper;
-import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.command.BizRemitRequestCommand;
 import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.CreateKcdBankAccountRecordModel;
 import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.GetKcdBankAccountModel;
 import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.GetKcdBankAccountRecordModel;
 import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.UpdateKcdBankAccountModel;
+import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bankaccount.contant.JpaKcdBankAccountAction;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bankaccount.mapper.JpaKcdBankAccountEntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -70,11 +70,11 @@ public class KcdBankAccountDataProvider implements
   }
 
   @Override
-  public KcdBankAccountRecord getKcdBankAccountRecord(String bankTransactionId) {
-    return JpaKcdBankAccountEntityMapper.to(getJpaKcdBankAccountRecord(bankTransactionId));
+  public KcdBankAccountRecord getKcdBankAccountRecord(String bankTransactionId, KcdBankAccountAction action) {
+    return JpaKcdBankAccountEntityMapper.to(getJpaKcdBankAccountRecord(bankTransactionId, KcdBankAccountActionMapper.to(action)));
   }
 
-  private JpaKcdBankAccountRecord getJpaKcdBankAccountRecord(String bankTransactionId) {
-    return kcdBankAccountRecordRepository.findJpaKcdBankAccountRecordByBankTransactionId(bankTransactionId).orElseThrow();
+  private JpaKcdBankAccountRecord getJpaKcdBankAccountRecord(String bankTransactionId, JpaKcdBankAccountAction action) {
+    return kcdBankAccountRecordRepository.findJpaKcdBankAccountRecordByBankTransactionIdAndAction(bankTransactionId, action).orElseThrow();
   }
 }

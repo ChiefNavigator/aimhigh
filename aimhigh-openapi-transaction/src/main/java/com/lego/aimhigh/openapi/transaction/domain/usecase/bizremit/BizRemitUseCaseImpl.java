@@ -79,9 +79,9 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
   @Override
   @Transactional
   public void depositToKcdBankAccount(BizRemitRequestCommand command, Long bizRemitRequestId) {
-    KcdBankAccountRecord kcdBankAccountRecord = getKcdBankAccountRecordModel.getKcdBankAccountRecord(command.getBankTransactionId());
+    KcdBankAccountRecord kcdBankAccountRecord = getKcdBankAccountRecordModel.getKcdBankAccountRecord(command.getBankTransactionId(), KcdBankAccountAction.DEPOSIT);
     if (kcdBankAccountRecord != null) {
-      log.warn("BizRequestFail Cause: Deposit to KcdBankAccount failed. bizRemitRequestId: {}", bizRemitRequestId);
+      log.warn("KcdBankAccount deposit has already been processed. bizRemitRequestId: {}", bizRemitRequestId);
       return;
     }
 
@@ -106,6 +106,12 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
   @Override
   @Transactional
   public void withdrawalFromKcdBankAccount(BizRemitRequestCommand command, Long bizRemitRequestId) {
+    KcdBankAccountRecord kcdBankAccountRecord = getKcdBankAccountRecordModel.getKcdBankAccountRecord(command.getBankTransactionId(), KcdBankAccountAction.WITHDRAWAL);
+    if (kcdBankAccountRecord != null) {
+      log.warn("KcdBankAccount withdrawal has already been processed bizRemitRequestId: {}", bizRemitRequestId);
+      return;
+    }
+
     final BizRemitRequest bizRemitRequest = getBizRemitRequestModel.getBizRemitRequest(command.getBankTransactionId());
     final KcdBankAccount kcdBankAccount = getKcdBankAccountModel.getKcdBankAccount(command.getUserKcdBankAccountId());
     final Long amount = kcdBankAccount.getAmount() - command.getAmount();
