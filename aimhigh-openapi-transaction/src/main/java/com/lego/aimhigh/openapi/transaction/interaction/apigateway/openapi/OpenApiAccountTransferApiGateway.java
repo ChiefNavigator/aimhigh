@@ -68,7 +68,7 @@ public class OpenApiAccountTransferApiGateway implements OpenApiAccountTransferM
   }
 
   private boolean isFailedAccountTransfer(ResponseEntity<AccountTransferResponse> responseEntity) {
-    if (responseEntity == null || responseEntity.getBody() == null) {
+    if (responseEntity == null || HttpStatus.OK != responseEntity.getStatusCode() || responseEntity.getBody() == null) {
       return true;
     }
 

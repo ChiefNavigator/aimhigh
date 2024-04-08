@@ -16,13 +16,27 @@ Content-Type: application/json
   "amount": 0
 }
 
+### 3. 사업자 송금
+POST http://localhost:8081/channel/api/biz-remit/v1
+Content-Type: application/json
 
-### 3. 사업자 송금 요청 생성
+{
+  "bankTransactionId": "99",
+  "userId": 1,
+  "userKcdBankAccountId": 1,
+  "requestDate" : "2024-04-08T00:00:00",
+  "fromAccountId": "BizBankAccount A",
+  "toAccountId": "BizBankAccount B",
+  "amount": 1000
+}
+
+
+### 3.1 사업자 송금 요청 생성
 POST http://localhost:8080/openapi-transaction/api/biz-remit-request/v1
 Content-Type: application/json
 
 {
-  "bankTransactionId": "123-4567-890",
+  "bankTransactionId": "99",
   "userId": 1,
   "userKcdBankAccountId": 1,
   "requestDate" : "2024-04-08T00:00:00",
@@ -31,12 +45,12 @@ Content-Type: application/json
   "amount": 1000
 }
 
-### 4. 사업자 은행 계좌에서 KCD 은행 계좌 이체
+### 3.2 사업자 은행 계좌에서 KCD 은행 계좌 이체
 POST http://localhost:8080/openapi-transaction/api/biz-remit-request/v1/1/account-deposit
 Content-Type: application/json
 
 {
-  "bankTransactionId": "123-4567-890",
+  "bankTransactionId": "99",
   "userId": 1,
   "userKcdBankAccountId": 1,
   "requestDate" : "2024-04-08T00:00:00",
@@ -45,12 +59,12 @@ Content-Type: application/json
   "amount": 1000
 }
 
-### 5. KCD 은행 계좌에서 사업자 은행 계좌 이체
+### 3.3 KCD 은행 계좌에서 사업자 은행 계좌 이체
 POST http://localhost:8080/openapi-transaction/api/biz-remit-request/v1/1/account-withdrawal
 Content-Type: application/json
 
 {
-  "bankTransactionId": "123-4567-890",
+  "bankTransactionId": "99",
   "userId": 1,
   "userKcdBankAccountId": 1,
   "requestDate" : "2024-04-08T00:00:00",
