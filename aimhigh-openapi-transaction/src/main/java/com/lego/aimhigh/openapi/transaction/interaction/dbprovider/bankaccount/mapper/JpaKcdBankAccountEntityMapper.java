@@ -1,7 +1,7 @@
 package com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bankaccount.mapper;
 
-import com.lego.aimhigh.openapi.transaction.entity.bankaccount.KcdBankAccount;
-import com.lego.aimhigh.openapi.transaction.entity.bankaccount.KcdBankAccountRecord;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.KcdBankAccount;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.KcdBankAccountRecord;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bankaccount.JpaKcdBankAccount;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bankaccount.JpaKcdBankAccountRecord;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.user.mapper.JpaUserMapper;

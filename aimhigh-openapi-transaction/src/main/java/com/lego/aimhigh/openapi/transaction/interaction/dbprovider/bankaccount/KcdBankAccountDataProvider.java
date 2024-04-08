@@ -1,14 +1,14 @@
 package com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bankaccount;
 
-import com.lego.aimhigh.openapi.transaction.entity.bankaccount.KcdBankAccount;
-import com.lego.aimhigh.openapi.transaction.entity.bankaccount.KcdBankAccountRecord;
-import com.lego.aimhigh.openapi.transaction.entity.bankaccount.contant.KcdBankAccountAction;
-import com.lego.aimhigh.openapi.transaction.entity.bankaccount.mapper.KcdBankAccountActionMapper;
-import com.lego.aimhigh.openapi.transaction.command.BizRemitRequestCommand;
-import com.lego.aimhigh.openapi.transaction.model.CreateKcdBankAccountRecordModel;
-import com.lego.aimhigh.openapi.transaction.model.GetKcdBankAccountModel;
-import com.lego.aimhigh.openapi.transaction.model.GetKcdBankAccountRecordModel;
-import com.lego.aimhigh.openapi.transaction.model.UpdateKcdBankAccountModel;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.KcdBankAccount;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.KcdBankAccountRecord;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.contant.KcdBankAccountAction;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.mapper.KcdBankAccountActionMapper;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.command.BizRemitRequestCommand;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.CreateKcdBankAccountRecordModel;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.GetKcdBankAccountModel;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.GetKcdBankAccountRecordModel;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.UpdateKcdBankAccountModel;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bankaccount.mapper.JpaKcdBankAccountEntityMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

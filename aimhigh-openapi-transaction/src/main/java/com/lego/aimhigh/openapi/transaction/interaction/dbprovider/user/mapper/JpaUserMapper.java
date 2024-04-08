@@ -1,6 +1,6 @@
 package com.lego.aimhigh.openapi.transaction.interaction.dbprovider.user.mapper;
 
-import com.lego.aimhigh.openapi.transaction.entity.user.User;
+import com.lego.aimhigh.openapi.transaction.domain.entity.user.User;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.user.JpaUser;
 
 public class JpaUserMapper {

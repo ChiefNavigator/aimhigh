@@ -1,6 +1,6 @@
 package com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bizremit.mapper;
 
-import com.lego.aimhigh.openapi.transaction.entity.bizremit.contant.BizRemitRequestStatus;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bizremit.contant.BizRemitRequestStatus;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bizremit.contant.JpaBizRemitRequestStatus;
 
 import java.util.Map;

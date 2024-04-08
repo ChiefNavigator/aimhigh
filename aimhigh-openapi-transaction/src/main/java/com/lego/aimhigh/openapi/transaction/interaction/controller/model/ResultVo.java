@@ -1,6 +1,6 @@
 package com.lego.aimhigh.openapi.transaction.interaction.controller.model;
 
-import com.lego.aimhigh.openapi.transaction.contant.StatusCode;
+import com.lego.aimhigh.openapi.transaction.domain.constant.StatusCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

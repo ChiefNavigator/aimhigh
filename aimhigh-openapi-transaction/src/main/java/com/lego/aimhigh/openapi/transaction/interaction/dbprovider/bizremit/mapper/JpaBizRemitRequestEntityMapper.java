@@ -1,7 +1,7 @@
 package com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bizremit.mapper;
 
-import com.lego.aimhigh.openapi.transaction.entity.bizremit.BizRemitRequest;
-import com.lego.aimhigh.openapi.transaction.entity.bizremit.BizRemitRequestRecord;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bizremit.BizRemitRequest;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bizremit.BizRemitRequestRecord;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bizremit.JpaBizRemitRequest;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bizremit.JpaBizRemitRequestRecord;
 

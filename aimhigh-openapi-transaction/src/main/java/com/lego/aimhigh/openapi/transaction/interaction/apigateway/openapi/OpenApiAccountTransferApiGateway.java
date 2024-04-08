@@ -1,13 +1,13 @@
 package com.lego.aimhigh.openapi.transaction.interaction.apigateway.openapi;
 
 import com.lego.aimhigh.openapi.transaction.config.annotation.ApiGateway;
-import com.lego.aimhigh.openapi.transaction.entity.bankaccount.KcdBankAccount;
-import com.lego.aimhigh.openapi.transaction.entity.bankaccount.contant.BankCode;
-import com.lego.aimhigh.openapi.transaction.entity.bizremit.BizRemitRequest;
-import com.lego.aimhigh.openapi.transaction.entity.user.User;
-import com.lego.aimhigh.openapi.transaction.constant.BizRemitExceptionCode;
-import com.lego.aimhigh.openapi.transaction.exception.BizRemitException;
-import com.lego.aimhigh.openapi.transaction.model.OpenApiAccountTransferModel;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.KcdBankAccount;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.contant.BankCode;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bizremit.BizRemitRequest;
+import com.lego.aimhigh.openapi.transaction.domain.entity.user.User;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.constant.BizRemitExceptionCode;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.exception.BizRemitException;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.OpenApiAccountTransferModel;
 import com.lego.aimhigh.openapi.transaction.interaction.apigateway.openapi.constant.AccountTransferConstant;
 import com.lego.aimhigh.openapi.transaction.interaction.apigateway.openapi.model.AccountTransferRequest;
 import com.lego.aimhigh.openapi.transaction.interaction.apigateway.openapi.model.AccountTransferRequestBody;

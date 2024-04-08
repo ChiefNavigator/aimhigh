@@ -1,9 +1,9 @@
 package com.lego.aimhigh.openapi.transaction.interaction.controller.bizremit;
 
-import com.lego.aimhigh.openapi.transaction.bizremit.BizRemitUseCase;
-import com.lego.aimhigh.openapi.transaction.command.BizRemitRequestCommand;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.BizRemitUseCase;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.command.BizRemitRequestCommand;
 import com.lego.aimhigh.openapi.transaction.interaction.controller.bizremit.contant.BizRemitRequestPayloadExceptionCode;
-import com.lego.aimhigh.openapi.transaction.exception.BizRemitException;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.exception.BizRemitException;
 import com.lego.aimhigh.openapi.transaction.interaction.controller.bizremit.exception.BizRemitPayloadException;
 import com.lego.aimhigh.openapi.transaction.interaction.controller.bizremit.model.BizRemitRequestPayload;
 import com.lego.aimhigh.openapi.transaction.interaction.controller.model.ResultVo;

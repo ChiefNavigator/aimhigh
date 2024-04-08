@@ -1,15 +1,15 @@
 package com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bizremit;
 
 
-import com.lego.aimhigh.openapi.transaction.entity.bizremit.BizRemitRequest;
-import com.lego.aimhigh.openapi.transaction.entity.bizremit.BizRemitRequestRecord;
-import com.lego.aimhigh.openapi.transaction.entity.bizremit.contant.BizRemitRequestStatus;
-import com.lego.aimhigh.openapi.transaction.entity.bizremit.mapper.BizRemitRequestStatusMapper;
-import com.lego.aimhigh.openapi.transaction.command.BizRemitRequestCommand;
-import com.lego.aimhigh.openapi.transaction.model.CreateBizRemitRequestRecordModel;
-import com.lego.aimhigh.openapi.transaction.model.CreateBizRemitRequestModel;
-import com.lego.aimhigh.openapi.transaction.model.GetBizRemitRequestModel;
-import com.lego.aimhigh.openapi.transaction.model.UpdateBizRemitRequestModel;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bizremit.BizRemitRequest;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bizremit.BizRemitRequestRecord;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bizremit.contant.BizRemitRequestStatus;
+import com.lego.aimhigh.openapi.transaction.domain.entity.bizremit.mapper.BizRemitRequestStatusMapper;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.command.BizRemitRequestCommand;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.CreateBizRemitRequestRecordModel;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.CreateBizRemitRequestModel;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.GetBizRemitRequestModel;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.UpdateBizRemitRequestModel;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bizremit.contant.JpaBizRemitRequestStatus;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bizremit.mapper.JpaBizRemitRequestEntityMapper;
 import lombok.RequiredArgsConstructor;
