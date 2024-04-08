@@ -44,8 +44,12 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
   @Override
   @Transactional
   public Long createBizRemitRequest(BizRemitRequestCommand command) {
-    BizRemitRequest createdBizRemitRequest = getBizRemitRequestModel.getBizRemitRequest(command.getBankTransactionId());
+    BizRemitRequest createdBizRemitRequest = getBizRemitRequestModel.getNullableBizRemitRequest(command.getBankTransactionId());
     if (createdBizRemitRequest != null) {
+      if (BizRemitRequestStatus.DONE == createdBizRemitRequest.getStatus()) {
+        return createdBizRemitRequest.getId();
+      }
+
       final int retryCount = createdBizRemitRequest.getRetryCount() + 1;
       final BizRemitRequestStatus bizRemitRequestStatus = retryCount >= MAX_RETRY_COUNT ? BizRemitRequestStatus.FAIL : createdBizRemitRequest.getStatus();
       createdBizRemitRequest.setRetryCount(retryCount + 1);
@@ -94,7 +98,7 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
   @Override
   @Transactional
   public void depositToKcdBankAccount(BizRemitRequestCommand command, Long bizRemitRequestId) {
-    KcdBankAccountRecord kcdBankAccountRecord = getKcdBankAccountRecordModel.getKcdBankAccountRecord(command.getBankTransactionId(), KcdBankAccountAction.DEPOSIT);
+    KcdBankAccountRecord kcdBankAccountRecord = getKcdBankAccountRecordModel.getNullableKcdBankAccountRecord(command.getBankTransactionId(), KcdBankAccountAction.DEPOSIT);
     if (kcdBankAccountRecord != null) {
       log.warn("KcdBankAccount deposit has already been processed. bizRemitRequestId: {}", bizRemitRequestId);
       return;
@@ -107,6 +111,7 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
 
     createKcdBankAccountRecordModel.createKcdBankAccountRecord(
       kcdBankAccount,
+      command.getAmount(),
       KcdBankAccountAction.DEPOSIT,
       command.getUserId(),
       command.getBankTransactionId()
@@ -121,13 +126,12 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
   @Override
   @Transactional
   public void withdrawalFromKcdBankAccount(BizRemitRequestCommand command, Long bizRemitRequestId) {
-    KcdBankAccountRecord kcdBankAccountRecord = getKcdBankAccountRecordModel.getKcdBankAccountRecord(command.getBankTransactionId(), KcdBankAccountAction.WITHDRAWAL);
+    KcdBankAccountRecord kcdBankAccountRecord = getKcdBankAccountRecordModel.getNullableKcdBankAccountRecord(command.getBankTransactionId(), KcdBankAccountAction.WITHDRAWAL);
     if (kcdBankAccountRecord != null) {
       log.warn("KcdBankAccount withdrawal has already been processed bizRemitRequestId: {}", bizRemitRequestId);
       return;
     }
 
-    final BizRemitRequest bizRemitRequest = getBizRemitRequestModel.getBizRemitRequest(command.getBankTransactionId());
     final KcdBankAccount kcdBankAccount = getKcdBankAccountModel.getKcdBankAccount(command.getUserKcdBankAccountId());
     final Long amount = kcdBankAccount.getAmount() - command.getAmount();
     kcdBankAccount.setAmount(amount);
@@ -135,6 +139,7 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
 
     createKcdBankAccountRecordModel.createKcdBankAccountRecord(
       kcdBankAccount,
+      command.getAmount(),
       KcdBankAccountAction.WITHDRAWAL,
       command.getUserId(),
       command.getBankTransactionId()
@@ -149,6 +154,7 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
       BizRemitRequestStatus.DONE
     );
 
+    final BizRemitRequest bizRemitRequest = getBizRemitRequestModel.getBizRemitRequest(command.getBankTransactionId());
     bizRemitRequest.setStatus(BizRemitRequestStatus.DONE);
     updateBizRemitRequestModel.updateBizRemitRequest(bizRemitRequest);
 

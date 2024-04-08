@@ -15,6 +15,7 @@ import com.lego.aimhigh.openapi.transaction.interaction.apigateway.openapi.model
 import com.lego.aimhigh.openapi.transaction.interaction.apigateway.openapi.model.AccountTransferResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,10 +28,16 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class OpenApiAccountTransferApiGateway implements OpenApiAccountTransferModel {
 
+  @Value("${aimhigh.openapi.transaction.isMockingMode}")
+  private boolean isMockingMode;
   private final RestTemplate restTemplate;
 
   @Override
   public void send(BizRemitRequest bizRemitRequest, KcdBankAccount kcdBankAccount, KcdBankAccountAction accountAction) {
+    if (isMockingMode) {
+      return;
+    }
+
     HttpHeaders headers = createHeaders();
     AccountTransferRequestBody requestBody = buildAccountTransferBody(bizRemitRequest, kcdBankAccount, accountAction);
     HttpEntity<AccountTransferRequestBody> requestEntity = new HttpEntity<>(requestBody, headers);

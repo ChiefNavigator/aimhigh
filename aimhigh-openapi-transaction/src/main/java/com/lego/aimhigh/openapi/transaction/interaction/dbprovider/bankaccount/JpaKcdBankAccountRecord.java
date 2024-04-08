@@ -27,6 +27,7 @@ public class JpaKcdBankAccountRecord extends JpaModelCreatable {
   private JpaKcdBankAccount kcdBankAccount;
 
   @Column
+  @Enumerated(EnumType.STRING)
   private JpaKcdBankAccountAction action;
 
   @Column

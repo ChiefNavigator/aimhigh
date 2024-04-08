@@ -7,4 +7,5 @@ public interface GetBizRemitRequestModel {
 
   BizRemitRequest getBizRemitRequest(Long id);
   BizRemitRequest getBizRemitRequest(String bankTransactionId);
+  BizRemitRequest getNullableBizRemitRequest(String bankTransactionId);
 }

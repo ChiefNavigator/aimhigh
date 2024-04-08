@@ -43,6 +43,7 @@ public class JpaBizRemitRequest extends JpaModelCreatable {
   private Long amount;
 
   @Column
+  @Enumerated(EnumType.STRING)
   private JpaBizRemitRequestStatus status;
 
   @Column

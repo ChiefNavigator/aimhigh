@@ -8,6 +8,7 @@ public interface CreateKcdBankAccountRecordModel {
 
   KcdBankAccountRecord createKcdBankAccountRecord(
     KcdBankAccount kcdBankAccount,
+    Long amount,
     KcdBankAccountAction kcdBankAccountAction,
     Long userId,
     String bankTransactionId

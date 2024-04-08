@@ -1,10 +1,10 @@
 package com.lego.aimhigh.openapi.transaction.interaction.controller.user.model;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
-@Builder
+@Setter
 public class CreateUserPayload {
-  private final String name;
+  private String name;
 }

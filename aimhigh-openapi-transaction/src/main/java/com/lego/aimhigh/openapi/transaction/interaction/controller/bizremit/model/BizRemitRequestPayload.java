@@ -1,18 +1,18 @@
 package com.lego.aimhigh.openapi.transaction.interaction.controller.bizremit.model;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Builder
+@Setter
 public class BizRemitRequestPayload {
-  private final String bankTransactionId;
-  private final Long userId;
-  private final Long userKcdBankAccountId;
-  private final LocalDateTime requestDate;
-  private final String fromAccountId;
-  private final String toAccountId;
-  private final Long amount;
+  private String bankTransactionId;
+  private Long userId;
+  private Long userKcdBankAccountId;
+  private LocalDateTime requestDate;
+  private String fromAccountId;
+  private String toAccountId;
+  private Long amount;
 }

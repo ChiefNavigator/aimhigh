@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -82,6 +83,13 @@ public class BizRemitRemitRequestDataProvider implements
   @Override
   public BizRemitRequest getBizRemitRequest(String bankTransactionId) {
     return JpaBizRemitRequestEntityMapper.to(jpaBizRemitRequestFindByBankTransactionId(bankTransactionId));
+  }
+
+  @Override
+  public BizRemitRequest getNullableBizRemitRequest(String bankTransactionId) {
+    return bizRemitRequestRepository.findJpaBizRemitRequestByBankTransactionId(bankTransactionId)
+      .map(JpaBizRemitRequestEntityMapper::to)
+      .orElse(null);
   }
 
   private JpaBizRemitRequest jpaBizRemitRequestFindByBankTransactionId(String bankTransactionId) {

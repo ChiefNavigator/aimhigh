@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -65,6 +66,7 @@ public class KcdBankAccountDataProvider implements
   @Transactional
   public KcdBankAccountRecord createKcdBankAccountRecord(
     KcdBankAccount kcdBankAccount,
+    Long amount,
     KcdBankAccountAction kcdBankAccountAction,
     Long userId,
     String bankTransactionId
@@ -72,6 +74,7 @@ public class KcdBankAccountDataProvider implements
     JpaKcdBankAccountRecord jpaKcdBankAccountRecord = new JpaKcdBankAccountRecord();
     jpaKcdBankAccountRecord.setBankTransactionId(bankTransactionId);
     jpaKcdBankAccountRecord.setKcdBankAccount(getJpaKcdBankAccount(kcdBankAccount.getId()));
+    jpaKcdBankAccountRecord.setAmount(amount);
     jpaKcdBankAccountRecord.setAction(KcdBankAccountActionMapper.to(kcdBankAccountAction));
     jpaKcdBankAccountRecord.setDeleted(false);
     LocalDateTime now = LocalDateTime.now();
@@ -91,13 +94,14 @@ public class KcdBankAccountDataProvider implements
   public KcdBankAccount getKcdBankAccount(Long id) {
     return JpaKcdBankAccountEntityMapper.to(getJpaKcdBankAccount(id));
   }
-
   @Override
-  public KcdBankAccountRecord getKcdBankAccountRecord(String bankTransactionId, KcdBankAccountAction action) {
-    return JpaKcdBankAccountEntityMapper.to(getJpaKcdBankAccountRecord(bankTransactionId, KcdBankAccountActionMapper.to(action)));
-  }
-
-  private JpaKcdBankAccountRecord getJpaKcdBankAccountRecord(String bankTransactionId, JpaKcdBankAccountAction action) {
-    return kcdBankAccountRecordRepository.findJpaKcdBankAccountRecordByBankTransactionIdAndAction(bankTransactionId, action).orElseThrow();
+  public KcdBankAccountRecord getNullableKcdBankAccountRecord(String bankTransactionId, KcdBankAccountAction action) {
+    return kcdBankAccountRecordRepository
+      .findJpaKcdBankAccountRecordByBankTransactionIdAndAction(
+        bankTransactionId,
+        KcdBankAccountActionMapper.to(action)
+      )
+      .map(JpaKcdBankAccountEntityMapper::to)
+      .orElse(null);
   }
 }

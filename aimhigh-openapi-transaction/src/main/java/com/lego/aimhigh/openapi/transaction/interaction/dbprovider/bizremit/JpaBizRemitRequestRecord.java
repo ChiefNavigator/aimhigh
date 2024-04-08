@@ -25,6 +25,7 @@ public class JpaBizRemitRequestRecord extends JpaModelCreatable {
   private JpaBizRemitRequest bizRemitRequest;
 
   @Column
+  @Enumerated(EnumType.STRING)
   private JpaBizRemitRequestStatus status;
 
 }

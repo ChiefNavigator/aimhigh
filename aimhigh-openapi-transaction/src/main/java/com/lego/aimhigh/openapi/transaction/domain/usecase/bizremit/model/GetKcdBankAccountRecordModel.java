@@ -4,6 +4,5 @@ import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.KcdBankAcc
 import com.lego.aimhigh.openapi.transaction.domain.entity.bankaccount.contant.KcdBankAccountAction;
 
 public interface GetKcdBankAccountRecordModel {
-
-  KcdBankAccountRecord getKcdBankAccountRecord(String bankTransactionId, KcdBankAccountAction action);
+  KcdBankAccountRecord getNullableKcdBankAccountRecord(String bankTransactionId, KcdBankAccountAction action);
 }
