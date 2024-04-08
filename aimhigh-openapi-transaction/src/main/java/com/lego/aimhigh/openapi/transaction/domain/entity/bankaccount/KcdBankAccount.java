@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class KcdBankAccount {
-  @NonNull private Long id;
+  private Long id;
   @NonNull private String accountNumber;
   @NonNull private User user;
   @NonNull private Long amount;

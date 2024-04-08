@@ -8,8 +8,11 @@ import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.Create
 import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.GetKcdBankAccountModel;
 import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.GetKcdBankAccountRecordModel;
 import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.UpdateKcdBankAccountModel;
+import com.lego.aimhigh.openapi.transaction.domain.usecase.kcdbankaccount.model.CreateKcdBankAccountModel;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bankaccount.contant.JpaKcdBankAccountAction;
 import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.bankaccount.mapper.JpaKcdBankAccountEntityMapper;
+import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.user.JpaUser;
+import com.lego.aimhigh.openapi.transaction.interaction.dbprovider.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +25,30 @@ public class KcdBankAccountDataProvider implements
   UpdateKcdBankAccountModel,
   CreateKcdBankAccountRecordModel,
   GetKcdBankAccountModel,
-  GetKcdBankAccountRecordModel {
+  GetKcdBankAccountRecordModel,
+  CreateKcdBankAccountModel {
 
   private final KcdBankAccountRepository kcdBankAccountRepository;
   private final KcdBankAccountRecordRepository kcdBankAccountRecordRepository;
+  private final UserRepository userRepository;
+
+  @Override
+  public KcdBankAccount createKcdBankAccount(KcdBankAccount kcdBankAccount) {
+    JpaUser user = userRepository.findById(kcdBankAccount.getUser().getId()).orElseThrow();
+    JpaKcdBankAccount jpaKcdBankAccount = new JpaKcdBankAccount();
+    jpaKcdBankAccount.setAccountNumber(kcdBankAccount.getAccountNumber());
+    jpaKcdBankAccount.setUser(user);
+    jpaKcdBankAccount.setAmount(kcdBankAccount.getAmount());
+    jpaKcdBankAccount.setDeleted(false);
+    LocalDateTime now = LocalDateTime.now();
+    jpaKcdBankAccount.setCreatedBy(String.valueOf(user.getId()));
+    jpaKcdBankAccount.setUpdatedBy(String.valueOf(user.getId()));
+    jpaKcdBankAccount.setCreatedAt(now);
+    jpaKcdBankAccount.setUpdatedAt(now);
+
+    return JpaKcdBankAccountEntityMapper.to(kcdBankAccountRepository.save(jpaKcdBankAccount));
+  }
+
 
   @Override
   @Transactional

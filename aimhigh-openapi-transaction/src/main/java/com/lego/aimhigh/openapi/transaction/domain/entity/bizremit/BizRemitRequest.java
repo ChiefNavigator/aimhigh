@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class BizRemitRequest {
-  @NonNull private Long id;
+  private Long id;
   @NonNull private String bankTransactionId;
   @NonNull private Long userId;
   @NonNull private Long userKcdBankAccountId;

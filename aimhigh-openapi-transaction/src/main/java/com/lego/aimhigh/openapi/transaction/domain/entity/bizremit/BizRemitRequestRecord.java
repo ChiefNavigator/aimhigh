@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BizRemitRequestRecord {
-  @NonNull private Long id;
+  private Long id;
   @NonNull private BizRemitRequest bizRemitRequest;
   @NonNull private BizRemitRequestStatus status;
 }

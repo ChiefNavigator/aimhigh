@@ -5,7 +5,6 @@ import com.lego.aimhigh.openapi.transaction.domain.entity.bizremit.BizRemitReque
 import com.lego.aimhigh.openapi.transaction.domain.entity.bizremit.BizRemitRequestRecord;
 import com.lego.aimhigh.openapi.transaction.domain.entity.bizremit.contant.BizRemitRequestStatus;
 import com.lego.aimhigh.openapi.transaction.domain.entity.bizremit.mapper.BizRemitRequestStatusMapper;
-import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.command.BizRemitRequestCommand;
 import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.CreateBizRemitRequestRecordModel;
 import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.CreateBizRemitRequestModel;
 import com.lego.aimhigh.openapi.transaction.domain.usecase.bizremit.model.GetBizRemitRequestModel;
@@ -31,21 +30,21 @@ public class BizRemitRemitRequestDataProvider implements
 
   @Override
   @Transactional
-  public BizRemitRequest createBizRemitRequest(BizRemitRequestCommand command) {
+  public BizRemitRequest createBizRemitRequest(BizRemitRequest bizRemitRequest) {
     JpaBizRemitRequest jpaBizRemitRequest = new JpaBizRemitRequest();
-    jpaBizRemitRequest.setBankTransactionId(command.getBankTransactionId());
-    jpaBizRemitRequest.setUserId(command.getUserId());
-    jpaBizRemitRequest.setUserKcdBankAccountId(command.getUserKcdBankAccountId());
-    jpaBizRemitRequest.setRequestDate(command.getRequestDate());
-    jpaBizRemitRequest.setFromAccountId(command.getFromAccountId());
-    jpaBizRemitRequest.setToAccountId(command.getToAccountId());
-    jpaBizRemitRequest.setAmount(command.getAmount());
+    jpaBizRemitRequest.setBankTransactionId(bizRemitRequest.getBankTransactionId());
+    jpaBizRemitRequest.setUserId(bizRemitRequest.getUserId());
+    jpaBizRemitRequest.setUserKcdBankAccountId(bizRemitRequest.getUserKcdBankAccountId());
+    jpaBizRemitRequest.setRequestDate(bizRemitRequest.getRequestDate());
+    jpaBizRemitRequest.setFromAccountId(bizRemitRequest.getFromAccountId());
+    jpaBizRemitRequest.setToAccountId(bizRemitRequest.getToAccountId());
+    jpaBizRemitRequest.setAmount(bizRemitRequest.getAmount());
     jpaBizRemitRequest.setStatus(JpaBizRemitRequestStatus.REQUEST);
     jpaBizRemitRequest.setRetryCount(0);
     jpaBizRemitRequest.setDeleted(false);
     LocalDateTime now = LocalDateTime.now();
-    jpaBizRemitRequest.setCreatedBy(String.valueOf(command.getUserId()));
-    jpaBizRemitRequest.setUpdatedBy(String.valueOf(command.getUserId()));
+    jpaBizRemitRequest.setCreatedBy(String.valueOf(bizRemitRequest.getUserId()));
+    jpaBizRemitRequest.setUpdatedBy(String.valueOf(bizRemitRequest.getUserId()));
     jpaBizRemitRequest.setCreatedAt(now);
     jpaBizRemitRequest.setUpdatedAt(now);
 

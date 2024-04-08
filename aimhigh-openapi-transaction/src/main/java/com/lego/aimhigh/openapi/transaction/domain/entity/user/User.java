@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class User {
-  @NonNull private Long id;
+  private Long id;
   @NonNull private String name;
 }

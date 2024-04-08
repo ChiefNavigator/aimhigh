@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class KcdBankAccountRecord {
-  @NonNull private Long id;
+  private Long id;
   @NonNull private String bankTransactionId;
   @NonNull private KcdBankAccount kcdBankAccount;
   @NonNull private KcdBankAccountAction action;

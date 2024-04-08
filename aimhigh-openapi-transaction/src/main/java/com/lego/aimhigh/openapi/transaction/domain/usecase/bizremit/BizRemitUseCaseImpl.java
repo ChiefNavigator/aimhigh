@@ -61,7 +61,7 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
       return createdBizRemitRequest.getId();
     }
 
-    final BizRemitRequest bizRemitRequest = createBizRemitRequestModel.createBizRemitRequest(command);
+    final BizRemitRequest bizRemitRequest = createBizRemitRequestModel.createBizRemitRequest(buildBizRemitRequest(command));
     createBizRemitRequestRecordModel.createBizRemitRequestRecord(
       bizRemitRequest,
       BizRemitRequestStatus.REQUEST
@@ -74,6 +74,21 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
     openApiAccountTransferModel.send(bizRemitRequest, kcdBankAccount, KcdBankAccountAction.DEPOSIT);
 
     return bizRemitRequest.getId();
+  }
+
+  private static BizRemitRequest buildBizRemitRequest(BizRemitRequestCommand command) {
+    BizRemitRequest bizRemitRequest = new BizRemitRequest();
+    bizRemitRequest.setBankTransactionId(command.getBankTransactionId());
+    bizRemitRequest.setUserId(command.getUserId());
+    bizRemitRequest.setUserKcdBankAccountId(command.getUserKcdBankAccountId());
+    bizRemitRequest.setRequestDate(command.getRequestDate());
+    bizRemitRequest.setFromAccountId(command.getFromAccountId());
+    bizRemitRequest.setToAccountId(command.getToAccountId());
+    bizRemitRequest.setAmount(command.getAmount());
+    bizRemitRequest.setStatus(BizRemitRequestStatus.REQUEST);
+    bizRemitRequest.setRetryCount(0);
+
+    return bizRemitRequest;
   }
 
   @Override
