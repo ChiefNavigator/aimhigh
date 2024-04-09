@@ -52,7 +52,7 @@ public class BizRemitUseCaseImpl implements BizRemitUseCase {
 
       final int retryCount = createdBizRemitRequest.getRetryCount() + 1;
       final BizRemitRequestStatus bizRemitRequestStatus = retryCount >= MAX_RETRY_COUNT ? BizRemitRequestStatus.FAIL : createdBizRemitRequest.getStatus();
-      createdBizRemitRequest.setRetryCount(retryCount + 1);
+      createdBizRemitRequest.setRetryCount(retryCount);
       createdBizRemitRequest.setStatus(bizRemitRequestStatus);
       updateBizRemitRequestModel.updateBizRemitRequest(createdBizRemitRequest);
 
